@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block body %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#plot-form').submit(function(event) {
+        event.preventDefault();
+        var formula = $('#formula').val();
+        $.ajax({
+            type: 'POST',
+            url: '/start_plot',
+            data: {formula: formula},
+            success: function(response) {
+                var plotDiv = response.plot_div;
+                $('#start_plot').html(plotDiv);
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = xhr.responseText;
+                $('#start_plot').html('<p>Ошибка: ' + xhr.error + '</p>');
+            }
+        });
+    });
+});
+
+// Функция для вставки формулы в поле ввода
+function insertFormula(formula) {
+    // Получаем ссылку на поле ввода
+    const formulaField = document.getElementById('formula');
+
+    // Получаем текущее значение поля ввода
+    const currentValue = formulaField.value;
+
+    // Получаем позицию курсора в поле ввода
+    const cursorPosition = formulaField.selectionStart;
+
+    // Вставляем формулу в текущую позицию курсора
+    const newValue = currentValue.slice(0, cursorPosition) + formula + currentValue.slice(cursorPosition);
+
+    // Обновляем значение поля ввода
+    formulaField.value = newValue;
+
+    // Перемещаем курсор в конец вставленной формулы
+    formulaField.selectionStart = formulaField.selectionEnd = cursorPosition + formula.length;
+
+    // Фокусируемся на поле ввода
+    formulaField.focus();
+}
+</script>
+
+<div class="container">
+    {% if islogin == False %}
+    <p>Если вы здесь впервые, то войдите или зарегистрируйтесь.</p>
+    <p>
+        <a href="/login">
+            <button class="knopa">Войти</button>
+        </a>
+    </p>
+    {% endif %}
+</div>
+
+<div class="container">
+    <div class="card shadow bg-light">
+        <div class="card-title text-center gradient-text"><h2>Создание графика</h2></div>
+        <div class="card-body">
+            <p>Если вам хочется просто попробовать построить график какой-либо функции, то вы можете сделать это здесь.
+                <br>Напишите формулу в поле для ввода ниже. Используйте синтаксис Python.
+                <br>Опции создания нескольких графиков функций, а также возможность загрузки графика доступны во вкладке
+                <a
+                        href="/create-graphic">"Создать график"</a>.</p>
+        </div>
+    </div>
+    <br>
+    <form id="plot-form">
+        <div class="card shadow border rounded">
+            <div class="container card-body">
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('sin(x)')">sin(x)
+                </button>
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('cos(x)')">cos(x)
+                </button>
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('tan(x)')">tan(x)
+                </button>
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('log(x)')">log(x)
+                </button>
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('cos(x)/sin(x)')">
+                    ctg(x)
+                </button>
+                <button class="formula-button btn btn-success" type="button" onclick="insertFormula('sqrt(x)')">
+                    sqrt(x)
+                </button>
+                <br>
+            </div>
+        </div>
+        <br>
+        <div class="card container shadow">
+            <div class="card-title text-center">
+                <h3><label for="formula">Формула:</label></h3>
+            </div>
+            <div class="card-body">
+                <input type="text" id="formula" name="formula" class="form-control" required>
+            </div>
+        </div>
+        <br>
+        <button class="btn btn-success" type="submit">Создать график</button>
+        <script>
+            function clearField(){
+            var getValue = document.getElementById("formula");
+                if (getValue.value !="") {
+                    getValue.value = "";
+                    }
+                }
+        </script>
+        <input type="button" class="btn btn-primary" value="Очистить поле" onclick="clearField()">
+    </form>
+    <br>
+    <div class="card shadow border rounded">
+        <div id="start_plot" class="card-body"></div>
+    </div>
+</div>
+{% endblock %}

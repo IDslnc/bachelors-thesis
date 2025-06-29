@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Визуализация
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Созданная визуализация</h1>
+</div>
+<div class="card mb-4 m-auto" style="width: 90%;" data-aos="slide-up">
+    <div class="card-body">
+        <div id="visualization"></div>
+        <br>
+        <p class="card-text blue-grad">Визуализация</p>
+    </div>
+</div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+        var visual = {{ visualjson | safe}};
+        Plotly.plot("visualization", visual,{});
+</script>
+<br>
+<div class="container">
+    <a href="{{ url_for('download_visual', vis_filename=vis_filename) }}" class="btn btn-primary">Скачать</a>
+</div>
+{% endblock %}

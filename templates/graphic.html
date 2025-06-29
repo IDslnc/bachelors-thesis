@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+График
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Созданный график</h1>
+</div>
+
+<div class="card mb-4 m-auto" style="width: 90%;" data-aos="slide-up">
+    <div class="card-body">
+        <div id="graphic"></div>
+        <br>
+        <p class="card-text blue-grad">График</p>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+        var graph = {{ graphjson | safe}};
+        Plotly.plot("graphic", graph,{});
+</script>
+<br>
+<div class="container">
+    <a href="{{ url_for('download_graphic', graph_filename=graph_filename) }}" class="btn btn-primary">Скачать график</a>
+</div>
+
+{% endblock %}

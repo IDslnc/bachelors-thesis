@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Создание вашего графика
+{% endblock %}
+
+{% block body %}
+<script>
+    function showOptions() {
+      var selectedOption = document.getElementById("typeGraph").value;
+      var bar = document.getElementById("bar");
+      var scatter = document.getElementById("scatter");
+      var box = document.getElementById("box");
+
+      // Скрываем все опции
+      bar.style.display = "none";
+      scatter.style.display = "none";
+      box.style.display = "none";
+
+      // Показываем опции для выбранного пункта
+      if (selectedOption === "bar") {
+        bar.style.display = "block";
+      } else if (selectedOption === "scatter") {
+        scatter.style.display = "block";
+      } else if (selectedOption === "box") {
+        box.style.display = "block";
+      }
+    }
+</script>
+<div class="container card shadow">
+    <div class="gradient-text card-title"><h2 class="text-center">Загрузите файл (CSV или XLSX):</h2></div>
+    <div class="card-body">
+        <form action="/upload_visual" method="post" enctype="multipart/form-data">
+            <input class="form-control" type="file" id="fileInput" accept=".csv, .xlsx" name="file"
+                   onchange="handleFileSelect(event)" required>
+            <br>
+
+            <select name="chart_type" id="typeGraph" class="form-select" onchange="showOptions()">
+                <option value="bar">Столбчатая диаграмма</option>
+                <option value="scatter">Точечная диаграмма</option>
+                <option value="box">Ящичковая диаграмма</option>
+            </select>
+            <br>
+
+            <div id="bar" style="display: none;">
+                <h2>Зависимости для столбчатой диаграммы:</h2>
+                <label>x</label>
+                <input class="form-control" type="text" id="xbar" name="xbar">
+                <label>y</label>
+                <input class="form-control" type="text" id="ybar" name="ybar">
+                <label>Цвет</label>
+                <input class="form-control" type="text" id="colorbar" name="colorbar">
+            </div>
+
+            <div id="scatter" style="display: none;">
+                <h2>Зависимости для точечной диаграммы:</h2>
+                <label>x</label>
+                <input class="form-control" type="text" id="xscatter" name="xscatter">
+                <label>y</label>
+                <input class="form-control" type="text" id="yscatter" name="yscatter">
+                <label>Размер</label>
+                <input class="form-control" type="text" id="sizescatter" name="sizescatter">
+                <label>Цвет</label>
+                <input class="form-control" type="text" id="colorscatter" name="colorscatter">
+            </div>
+
+            <div id="box" style="display: none;">
+                <h2>Зависимости для ящичковой диаграммы:</h2>
+                <label>x</label>
+                <input class="form-control" type="text" id="xbox" name="xbox">
+                <label>y</label>
+                <input class="form-control" type="text" id="ybox" name="ybox">
+            </div>
+            <br>
+            <input type="submit" class="btn btn-info" value="Загрузить">
+        </form>
+    </div>
+</div>
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+    function handleFileSelect(evt) {
+      var file = evt.target.files[0];
+
+      // Проверка расширения файла
+      if (file) {
+        var fileName = file.name;
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+
+        if (fileExtension === 'xlsx') {
+          readXlsxFile(file);
+        } else if (fileExtension === 'csv') {
+          readCsvFile(file);
+        } else {
+          alert('Пожалуйста, загрузите файл с расширением .xlsx или .csv');
+        }
+      }
+    }
+
+    function readXlsxFile(file) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var data = new Uint8Array(e.target.result);
+        var workbook = XLSX.read(data, {type: 'array'});
+
+        // Получаем первый лист в книге
+        var firstSheet = workbook.SheetNames[0];
+
+        // Преобразуем первый лист в объект JSON
+        var jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+        // Выводим первую строку
+        if (jsonData.length > 0) {
+          var firstRows = jsonData[0];
+          var output = document.getElementById('output');
+          output.textContent = JSON.stringify(firstRows);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    function readCsvFile(file) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var contents = e.target.result;
+
+        // Разбиваем содержимое файла на строки
+        var lines = contents.split('\n');
+
+        // Получаем первую строку
+        if (lines.length > 0) {
+          var firstLines = lines[0];
+          var output = document.getElementById('output');
+          output.textContent = firstLines;
+        }
+      };
+
+      reader.readAsText(file);
+    }
+</script>
+<br>
+<div class="container card shadow">
+    <div class="gradient-text card-title text-center">
+        <h5>Здесь находятся наименования столбцов вашего файла</h5>
+    </div>
+    <div class="container card-body text-center" id="output"></div>
+</div>
+{% endblock %}

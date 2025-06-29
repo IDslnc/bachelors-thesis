@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Создание вашего графика
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="card container shadow">
+        <div class="card-title text-center gradient-text">
+            <h3>Введите данные для вашего графика</h3>
+        </div>
+        <p class="text-center"><i>Пример: </i>Для функции: <i>x<sup>2</sup> + cos(x)</i> ввод будет: x ** 2 + cos(x)</p>
+    </div>
+    <br>
+    <script>
+    function createFields() {
+      // Получение значения скока надо графиков (столько построится полей)
+      var numFields = document.getElementById("howMuch").value;
+
+      // Очистка предыдущих полей для ввода (если они существуют)
+      var container = document.getElementById("inputContainer");
+      container.innerHTML = "";
+
+      // Создание новых полей для ввода
+      for (var i = 0; i < numFields; i++) {
+        var inputWrapper = document.createElement("div"); // Создаем обертку для поля ввода и надписи
+        inputWrapper.className = "container";
+
+        var label = document.createElement("label");
+        label.textContent = "Формула " + (i + 1);
+        inputWrapper.appendChild(label);
+
+        var input = document.createElement("input");
+        input.setAttribute("required", "")
+        input.value = "sin(x) * " + (i + 1);
+        input.type = "text";
+        input.name = "formula" + i;
+        input.id = "formula" + i;
+        input.className = "form-control";
+        inputWrapper.appendChild(input);
+
+        container.appendChild(inputWrapper);
+      }
+    }
+
+    </script>
+    <div class="card container shadow">
+        <form method="post" action="graphic">
+            <div class="card-body">
+                <input type="number" max="5" name="howMuch" id="howMuch" class="form-control" min="1"
+                       onchange="createFields()" placeholder="Сколько графиков создать?" required><br>
+                <div id="inputContainer"></div>
+                <br>
+                <input type="number" min="-25" max="0" name="start" id="start" value="-10" class="form-control"
+                       placeholder="Начало"><br>
+                <input type="number" min="0.05" max="1" step="0.01" name="step" id="step" value="0.1"
+                       class="form-control" placeholder="Шаг"><br>
+                <input type="number" min="5" max="25" name="end" id="end" value="10" class="form-control"
+                       placeholder="Конец"><br>
+                <input type="submit" class="btn btn-success" value="Отправить"><br>
+            </div>
+        </form>
+    </div>
+    <br>
+    <p style="color: blue;">Ваш график будет построен и добавлен в базу данных после нажатия этой кнопки.
+        <br>Вы сможете его посмотреть в разделе <a href="/graph_feed">"Лента графиков"</a></p>
+</div>
+
+{% endblock %}

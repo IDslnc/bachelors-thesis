@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Регистрация
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Страница регистрации</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <table>
+            <tr>
+                <td><input type="text" class="form-control" name="login" placeholder="Введите логин" minlength="4"></td>
+            </tr>
+            <tr>
+                <td><input type="password" class="form-control" name="password" placeholder="Введите пароль" minlength="3"></td>
+            </tr>
+            <tr>
+                <td><input type="password" class="form-control" name="password2" placeholder="Введите пароль повторно" minlength="3"></td>
+            </tr>
+            <tr>
+                <td><input type="submit" class="btn btn-primary btn-block" value="Зарегистрироваться"></td>
+            </tr>
+            <tr>
+                <td><a href="{{ url_for('login_page') }}" class="btn btn-outline-secondary">Войти, если уже зарегистрированы</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}

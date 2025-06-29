@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Лента графиков
+{% endblock %}
+
+{% block body %}
+<div class="gradient-text text-center"><h3>Графики пользователей</h3></div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% for graph in graphs %}
+<div class="card container shadow">
+    <div class="container card-title"><h3>{{ graph.user.login }}</h3></div>
+    <div class="card-body">
+        <div data-aos="slide-up" id="graphic_{{ loop.index }}">
+
+            <script type="text/javascript">
+            var graphData_{{ loop.index }} = JSON.parse('{{ graph.graphjson | safe}}');
+            Plotly.plot("graphic_{{ loop.index }}", graphData_{{ loop.index }},{});
+            </script>
+
+            {% if graph.user.id == current_user.id %}
+            <button class="btn btn-warning" onclick="deleteGraph({{ graph.id }})">Удалить</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<br>
+{% endfor %}
+<script>
+    function deleteGraph(graphId) {
+        if (confirm("Вы уверены, что хотите удалить график?")) {
+            // Создаем объект XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+
+            // Устанавливаем метод запроса и URL
+            xhr.open('POST', '/delete_graph', true);
+
+            // Устанавливаем заголовок Content-Type для передачи данных формы
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            // Определяем обработчик события, вызываемый при изменении состояния запроса
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    // Обработка успешного ответа после удаления графика
+                    // Обновляем страницу или выполняем другие действия по необходимости
+                    location.reload();
+                }
+            };
+
+            // Отправляем запрос на удаление графика с передачей идентификатора графика
+            xhr.send('graph_id=' + encodeURIComponent(graphId));
+        }
+    }
+</script>
+{% endblock %}
