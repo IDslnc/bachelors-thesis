@@ -34,12 +34,24 @@ https://idse.pythonanywhere.com/
 
 ## Структура проекта
 
-instance/ база данных
+- instance/ база данных
+- static/ Стили, изображения и скрипты
+- templates/ HTML-шаблоны для Flask
+- main.py Основное Flask-приложение
+- README.md
+- exam_box.html пример созданной интерактивной диаграммы на своих данных
+---
 
-static/ Стили, изображения и скрипты
+## Интерфейс
 
-templates/ HTML-шаблоны для Flask
+- Главная страница
+<img width="1877" height="871" alt="image" src="https://github.com/user-attachments/assets/5711c66d-35c6-46bb-b01c-419990ed55e3" />
 
-main.py Основное Flask-приложение
+- Созданный график по формуле
+<img width="1308" height="516" alt="image" src="https://github.com/user-attachments/assets/a4094cb1-c975-4c39-8f61-e29db9054bd5" />
 
-README.md
+- Настройки создания визуализации
+<img width="1873" height="493" alt="image" src="https://github.com/user-attachments/assets/80eebe10-fe7c-454e-970e-c0cce4a049f3" />
+
+- Созданная диаграмма данных
+<img width="1904" height="950" alt="image" src="https://github.com/user-attachments/assets/b6a34310-587d-4447-876d-7d796574bfe3" />
