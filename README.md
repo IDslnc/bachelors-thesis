@@ -27,7 +27,7 @@ https://idse.pythonanywhere.com/
 - Python 3.x
 - Flask
 - Jinja2
-- Plotly / Chart.js (или аналогичные JS-библиотеки)
+- Plotly
 - HTML, CSS, JavaScript
 
 ---
